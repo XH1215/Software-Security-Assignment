@@ -1,0 +1,14 @@
+{
+    "elements": {},
+    "attributes": {
+        "background": {
+            "context": "td"
+        },
+        "leftmargin": {
+            "context": "body"
+        },
+        "height": {
+            "context": "table"
+        }
+    }
+}
