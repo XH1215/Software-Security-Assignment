@@ -104,18 +104,8 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
     // Redirect to the login page with an error message
     header("Location: ".$GLOBALS["siteroot"]."account.php");
     exit;
-} 
-        $userid = db_query("SELECT uid FROM users WHERE login='" . $loginName . "'");
-        $sessionid = get_last_id();
-        // Hash the session ID before setting it in the cookie
-        $hashedSessionID = hash('sha256', $sessionid);
-        // Set session cookie with secure and HTTP only flags
-        $cookieParams = session_get_cookie_params();
-        setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
+}
 
-        $result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
-
-        // Redirect to userdetails page
         header("Location: " . $GLOBALS["siteroot"] . "userdetails.php?id=$userid");
         exit;
     }
@@ -136,13 +126,34 @@ $hashedSessionID = hash('sha256', $uuid);
 $result = db_query("INSERT INTO sessions (uid, userid) VALUES ('$hashedSessionID', $userid)");
 
 if ($result) {
-    // Insert successful
-    // Redirect to userdetails page
+
+
+// Execute the SQL query to get the user ID
+$result = db_query("SELECT uid FROM users WHERE login = '$loginName'");
+
+// Fetch the row from the result set
+$row = fetch_row($result);
+
+// Extract the user ID from the row
+$userid = $row["uid"];
+
+
+
+
+        $sessionid = get_last_id();
+        // Hash the session ID before setting it in the cookie
+        $hashedSessionID = hash('sha256', $sessionid);
+        // Set session cookie with secure and HTTP only flags
+        $cookieParams = session_get_cookie_params();
+        setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
+
+        $result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
+
+        // Redirect to userdetails page
     header("Location: " . $GLOBALS["siteroot"] . "userdetails.php?id=$userid");
     exit;
 } else {
-    // Insert failed
-    // Handle the error accordingly, for example:
+
     echo "Error: Failed to insert session data into the database.";
 }
 
