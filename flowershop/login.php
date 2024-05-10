@@ -77,40 +77,49 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
     db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$loginName'");
 }
 
-                        // Check login credentials
-   $result = mysql_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+   // Check login credentials
+   $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+ 
 
-if (num_rows($result)==0){
 
- // Invalid login, increment login attempts count
+ if (num_rows($result) == 0) {
+    // Invalid login, increment login attempts count
     $result = mysql_query("SELECT login_attempts FROM users WHERE login='" . $loginName . "'");
     $row = fetch_row($result);
     $loginAttempts = $row["login_attempts"] + 1;
 
-// Give the user a session cookie (timeout in 1 week) and transfer to userdetails page
-$sessionid = get_last_id();
-// Hash the session ID before setting it in the cookie
-$hashedSessionID = hash('sha256', $uuid);
-// Set session cookie with secure and HTTP only flags
-$cookieParams = session_get_cookie_params();
-setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
+    // Update login attempts count
+    db_query("UPDATE users SET login_attempts = $loginAttempts WHERE login = '$loginName'");
 
-$result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
+    // Check if login attempts reach 5
+    if ($loginAttempts >= 5) {
+        // Lock the account
+        db_query("UPDATE users SET lock_time = NOW() WHERE login = '$loginName'");
+        echo "<p class=\"content\">Account has been locked. Please try again in 5 minutes.\n";
+        exit;
+    } else {
+        $result = mysql_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+        if (mysql_num_rows($result) == 0) {
+    // No matching login name found
+    // Redirect to the login page with an error message
+    header("Location: ".$GLOBALS["siteroot"]."account.php");
+    exit;
+} 
+        $userid = db_query("SELECT uid FROM users WHERE login='" . $loginName . "'");
+        $sessionid = get_last_id();
+        // Hash the session ID before setting it in the cookie
+        $hashedSessionID = hash('sha256', $sessionid);
+        // Set session cookie with secure and HTTP only flags
+        $cookieParams = session_get_cookie_params();
+        setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
 
-<<<<<<<<< Temporary merge branch 1
-=========
-=========
->>>>>>>>> Temporary merge branch 2
-                        // Check login credentials
-                        $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+        $result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
 
-                        if (num_rows($result) == 0) {
-                            // Update login attempts and lock time
-                            $loginAttempts++;
-                            db_query("UPDATE users SET login_attempts = $loginAttempts, lock_time = NOW() WHERE login = '$loginName'");
-
-    echo "<p class=\"content\">Invalid login\n";
-                        } else {
+        // Redirect to userdetails page
+        header("Location: " . $GLOBALS["siteroot"] . "userdetails.php?id=$userid");
+        exit;
+    }
+} else {
 // Successful login
 $row = fetch_row($result);
 $userid = $row["uid"];
@@ -122,11 +131,20 @@ db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$
 $sessionid = get_last_id();
 // Hash the session ID before setting it in the cookie
 $hashedSessionID = hash('sha256', $uuid);
-// Set session cookie with secure and HTTP only flags
-$cookieParams = session_get_cookie_params();
-setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
 
-$result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
+// Insert the session ID and user ID into the sessions table
+$result = db_query("INSERT INTO sessions (session_id, user_id) VALUES ('$hashedSessionID', $userid)");
+
+if ($result) {
+    // Insert successful
+    // Redirect to userdetails page
+    header("Location: " . $GLOBALS["siteroot"] . "userdetails.php?id=$userid");
+    exit;
+} else {
+    // Insert failed
+    // Handle the error accordingly, for example:
+    echo "Error: Failed to insert session data into the database.";
+}
 
 
 

@@ -43,8 +43,9 @@ if (!open_db()){
 }
 
 if (isset( $_COOKIE["flowershop_session"])) {
-	$result=mysql_query("select * from sessions where uid=".$_COOKIE["flowershop_session"]);
-	if (num_rows($result)!=1){
+    $session_id = $_COOKIE["flowershop_session"];
+    $result = db_query("SELECT * FROM sessions WHERE uid='$session_id'");	
+    if (num_rows($result)!=1){
 		echo "<p class=\"content\">Invalid or timed-out session, please login<br><br>\n";
 ?>
 
