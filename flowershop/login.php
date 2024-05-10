@@ -87,16 +87,27 @@ if (num_rows($result)==0){
     $row = fetch_row($result);
     $loginAttempts = $row["login_attempts"] + 1;
 
-    // Check if login attempts reached 5
-    if ($loginAttempts >= 5) {
-        // Update login attempts count and lock_time
-        $currentTime = date('Y-m-d H:i:s');
-        db_query("UPDATE users SET login_attempts = $loginAttempts, lock_time = '$currentTime' WHERE login = '$loginName'");
-    } else {
-        // Update login attempts count only
-        db_query("UPDATE users SET login_attempts = $loginAttempts WHERE login = '$loginName'");
-    }
+// Give the user a session cookie (timeout in 1 week) and transfer to userdetails page
+$sessionid = get_last_id();
+// Hash the session ID before setting it in the cookie
+$hashedSessionID = hash('sha256', $uuid);
+// Set session cookie with secure and HTTP only flags
+$cookieParams = session_get_cookie_params();
+setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
 
+$result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
+
+<<<<<<<<< Temporary merge branch 1
+=========
+=========
+>>>>>>>>> Temporary merge branch 2
+                        // Check login credentials
+                        $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+
+                        if (num_rows($result) == 0) {
+                            // Update login attempts and lock time
+                            $loginAttempts++;
+                            db_query("UPDATE users SET login_attempts = $loginAttempts, lock_time = NOW() WHERE login = '$loginName'");
 
     echo "<p class=\"content\">Invalid login\n";
                         } else {
