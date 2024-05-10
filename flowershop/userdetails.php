@@ -44,7 +44,7 @@ if (!open_db()){
 session_start();    
 $result=db_query("select * from users where uid=".$_GET["id"]);
 $row=fetch_row($result);
-$csrfToken = $_SESSION['csrf_token'];
+$csrfToken = $_COOKIE['PHPSESSID'];
 while($row){
 	echo "<p class=\"content\">Here are your user details.\n";
 	echo "<br><br>\n";
