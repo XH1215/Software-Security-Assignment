@@ -133,7 +133,7 @@ $sessionid = get_last_id();
 $hashedSessionID = hash('sha256', $uuid);
 
 // Insert the session ID and user ID into the sessions table
-$result = db_query("INSERT INTO sessions (uid, user_id) VALUES ('$hashedSessionID', $userid)");
+$result = db_query("INSERT INTO sessions (uid, userid) VALUES ('$hashedSessionID', $userid)");
 
 if ($result) {
     // Insert successful
