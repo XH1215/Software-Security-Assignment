@@ -75,32 +75,26 @@ if ($loginAttempts >= 5 && $formattedLockTime > $fiveMinutesAgo) {
     db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$loginName'");
 }
                         // Check login credentials
-                        $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+   $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
 
-                        if (num_rows($result) == 0) {
-                            // Update login attempts and lock time
-                            $loginAttempts++;
-                            db_query("UPDATE users SET login_attempts = $loginAttempts, lock_time = NOW() WHERE login = '$loginName'");
+if (num_rows($result)==0){
 
-                            echo "<p class=\"content\">Invalid login\n";
-                        } else {
-// Successful login
-$row = fetch_row($result);
-$userid = $row["uid"];
-$uuid = uniqid();
-// Reset login attempts and lock time
-db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$loginName'");
+    $result = db_query("SELECT login_attempts FROM users WHERE login='" . $loginName . "'");
+    $row = fetch_row($result);
+    $loginAttempts = $row["login_attempts"] + 1;
 
-// Give the user a session cookie (timeout in 1 week) and transfer to userdetails page
-$sessionid = get_last_id();
-// Hash the session ID before setting it in the cookie
-$hashedSessionID = hash('sha256', $uuid);
-// Set session cookie with secure and HTTP only flags
-$cookieParams = session_get_cookie_params();
-setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
+    // Update login attempts count in the database
 
-$result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
+    db_query("UPDATE users SET login_attempts = $loginAttempts WHERE login = '$loginName'");
+	echo "<p class=\"content\">Invalid login\n";
+}
+else{
+	$row=fetch_row($result);
+	$userid=$row["uid"];
 
+	// give the user a session cookie (timout in 1 week) and transfer to userdetails page
+	$result=db_query("insert into sessions values (NULL, $userid)");
+	$sessionid=get_last_id();
 
 session_start();
 
