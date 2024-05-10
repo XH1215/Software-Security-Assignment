@@ -97,10 +97,7 @@ setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams
 
 $result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
 
-<<<<<<<<< Temporary merge branch 1
-=========
-=========
->>>>>>>>> Temporary merge branch 2
+
                         // Check login credentials
                         $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
 
