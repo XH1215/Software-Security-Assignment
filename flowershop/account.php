@@ -43,9 +43,8 @@ if (!open_db()){
 }
 
 if (isset( $_COOKIE["flowershop_session"])) {
-	$result=
-    ("select * from sessions where uid=".$_COOKIE["flowershop_session"]);
-	if (num_rows($result)!=1){
+$result = mysql_query("SELECT * FROM sessions WHERE uid = '".$_COOKIE["flowershop_session"]."'");    echo $result;
+    	if (num_rows($result)!=1){
 		echo "<p class=\"content\">Invalid or timed-out session, please login<br><br>\n";
 ?>
 
@@ -61,7 +60,7 @@ if (isset( $_COOKIE["flowershop_session"])) {
 	else{
 session_start();
 if (!isset($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+$_SESSION['csrf_token'] = bin2hex(openssl_random_pseudo_bytes(32));
 }
 $csrfToken = $_SESSION['csrf_token'];
 		$row=fetch_row($result);    
