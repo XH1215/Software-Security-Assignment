@@ -7,10 +7,34 @@ ob_start();
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><!-- InstanceBegin template="/Templates/template.dwt" codeOutsideHTMLIsLocked="true" -->
 <head>
-
 <title>Flo's Flowershop</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="style.css" rel="stylesheet" type="text/css">
+
+<!-- Add script for password strength checker -->
+<script>
+function checkPasswordStrength() {
+    var password = document.getElementById("password").value;
+    var confirmPassword = document.getElementById("confirmpassword").value;
+    var strengthMeter = document.getElementById("password-strength");
+
+    // Regular expression for password strength validation
+    var strongRegex = new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})");
+
+    if (password === confirmPassword && strongRegex.test(password)) {
+        strengthMeter.innerHTML = "Strong";
+        strengthMeter.style.color = "green";
+        // Enable form submission
+        document.getElementById("submitBtn").disabled = false;
+    } else {
+        strengthMeter.innerHTML = "Weak";
+        strengthMeter.style.color = "red";
+        // Disable form submission
+        document.getElementById("submitBtn").disabled = true;
+    }
+}
+</script>
+
 </head>
 
 <body bgcolor=#9FB93D leftmargin=0 topmargin=0 marginwidth=0 marginheight=0>
@@ -32,21 +56,18 @@ ob_start();
         <tr>
           <td width="15" height="410"><img src="images/spacer.gif" width="1" height="1"></td>
           <td width="752" align="left" valign="top">
-		    <!-- InstanceBeginEditable name="Content" -->
-		    <p class="Content">Please enter the following details so we can complete
-              your order. This information will be saved on our secure server
-              for your convenience on future purchases.</p>
+            <!-- InstanceBeginEditable name="Content" -->
+            <p class="Content">Please enter the following details so we can complete your order. This information will be saved on our secure server for your convenience on future purchases.</p>
 
-
-	    <form action="saveuser.php" method="post">
+            <form action="saveuser.php" method="post">
             <table>
               <tr>
                 <td class="Content">Name</td>
-                <td><input name="name" size="65" maxlength="100" value="<?php echo $_POST["name"] ?>"></td>
+                <td><input name="name" size="65" maxlength="100" value="<?php echo isset($_POST["name"]) ? $_POST["name"] : '' ?>"></td>
               </tr>
               <tr>
                 <td valign="top" class="Content">Address</td>
-                <td><textarea name="address" cols="60" rows="4" wrap="PHYSICAL"><?php echo $_POST["address"] ?></textarea></td>
+                <td><textarea name="address" cols="60" rows="4" wrap="PHYSICAL"><?php echo isset($_POST["address"]) ? $_POST["address"] : '' ?></textarea></td>
               </tr>
               <tr>
                 <td><img height="5" src="images/px.gif"></td>
@@ -67,7 +88,7 @@ ob_start();
                 <td><input name="cardnumber" maxlength="16"></td>
               </tr>
               <tr>
-                <td class="Content">Expiry Date</td>
+                     <td class="Content">Expiry Date</td>
                 <td><select name="expmonth">
                       <option value="1" selected>1</option>
                       <option value="2">2</option>
@@ -105,23 +126,34 @@ ob_start();
               </tr>
               <tr>
                 <td class="Content">Login</td>
-                <td><input name="login" type="text" value="<?php echo $_POST["login"] ?>"></td>
+                <td><input name="login" type="text" value="<?php echo isset($_POST["login"]) ? $_POST["login"] : '' ?>"></td>
               </tr>
               <tr>
                 <td class="Content">Password</td>
-                <td><input name="password" type="password"></td>
-              </tr>
-			  <tr>
-                <td class="Content">Confirm Password</td>
-                <td><input name="confirmpassword" type="password"></td>
+                <td><input id="password" name="password" type="password" onkeyup="checkPasswordStrength()"></td>
               </tr>
               <tr>
-                <td>&nbsp;</td>
-                <td><input type="submit" value="Create Account"></td>
+                <td class="Content">Confirm Password</td>
+                <td><input id="confirmpassword" name="confirmpassword" type="password" onkeyup="checkPasswordStrength()"></td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>Password Strength: <span id="password-strength"></span></td>
+              </tr>
+              <tr>
+    <td></td>
+    <td>
+        <div id="password-hint" style="font-size: 12px; color: #888;">
+            Passwords must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+        </div>
+    </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+                <td><input id="submitBtn" type="submit" value="Create Account"></td>
               </tr>
             </table>
             </form>
-
             <!-- InstanceEndEditable --></td>
           <td width="20"><img src="images/spacer.gif" width="1" height="1"></td>
         </tr>
@@ -131,7 +163,6 @@ ob_start();
       </table></td>
     <td width="218" background="images/rightsidefill.gif"><img src="images/spacer.gif" width="1" height="1"></td>
   </tr>
-
 </table>
 </body>
 <!-- InstanceEnd --></html>

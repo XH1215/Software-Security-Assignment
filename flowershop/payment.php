@@ -66,7 +66,7 @@ else{
 			$total = calc_cart_total();
 			echo "<p class=\"content\">Your total value of this cart is <b>$".number_format($total, 2)."</b></p>\n";
 			echo "<p class=\"content\">Payment will be made with the credit card currently on file with us.  Its details are...\n";
-			$session=db_query("select * from sessions where uid =".$_COOKIE["flowershop_session"]);
+			$session=db_query("select * from sessions where uid ='".$_COOKIE["flowershop_session"]."'");
 			$srow=fetch_row($session);
 			$userid=$srow["userid"];
 

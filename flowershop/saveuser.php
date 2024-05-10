@@ -62,11 +62,11 @@ function checkinputs(){
 		$message=$message. "<li>Invalid card number</li>\n";
 		$error=TRUE;
 	}
-	if (($_POST["expmonth"]<1) || ($_POST["expirydate"]>12)){
+	if (($_POST["expmonth"]<1) || ($_POST["expmonth"]>12)){
 		$message=$message. "<li>Invalid expiry month</li>\n";
 		$error=TRUE;
 	}
-	if (($_POST["expyear"]<2004) || ($_POST["expiryyear"]>2015)){
+	if (($_POST["expyear"]<2004) || ($_POST["expyear"]>2015)){
 		$message=$message. "<li>Invalid expiry year</li>\n";
 		$error=TRUE;
 	}
@@ -109,14 +109,21 @@ if (strlen($_POST["cardnumber"]) > 50){
 	header("Location: ".$GLOBALS["siteroot"]."overflow.php");
 }
 else if (checkinputs()){
-	$result=db_query("insert into users values (NULL,'".$_POST["login"]."','".$_POST["password"]."','".$_POST["name"]."','".$_POST["address"]."','".$_POST["cardnumber"]."',".$_POST["expmonth"].",".$_POST["expyear"].")");
+$result = db_query("INSERT INTO users VALUES (NULL, '".$_POST["login"]."', '".$_POST["password"]."', '".$_POST["name"]."', '".$_POST["address"]."', '".$_POST["cardnumber"]."', ".$_POST["expmonth"].", ".$_POST["expyear"].", 0,null)");
 	echo "<p class=\"content\">Data saved... Transfering to payment page";
-	$userid=get_last_id();
+   $result = db_query("SELECT * FROM users WHERE login='" . $_POST["login"] . "' AND password='" . $_POST["password"] . "'");
+	$row = fetch_row($result);
+	$userid = $row["uid"];
+	$uuid = uniqid();
+// Hash the session ID before setting it in the cookie
+$hashedSessionID = hash('sha256', $uuid);
+	setcookie("flowershop_session", "$hashedSessionID", time()+604800);
 
-	// give the user a session cookie (timout in 1 week) and transfer to payment page
-	$result=db_query("insert into sessions values (NULL, $userid)");
-	$sessionid=get_last_id();
-	setcookie("flowershop_session", "$sessionid", time()+604800);
+// Insert the session ID and user ID into the sessions table
+$result = db_query("INSERT INTO sessions (uid, userid) VALUES ('$hashedSessionID', $userid)");
+
+
+
 	header("Location: ".$GLOBALS["siteroot"]."payment.php");
 }
 

@@ -118,7 +118,6 @@ $uuid = uniqid();
 db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$loginName'");
 
 // Give the user a session cookie (timeout in 1 week) and transfer to userdetails page
-$sessionid = get_last_id();
 // Hash the session ID before setting it in the cookie
 $hashedSessionID = hash('sha256', $uuid);
 
