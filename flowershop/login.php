@@ -139,27 +139,15 @@ $userid = $row["uid"];
 
 
 
-
-        $sessionid = get_last_id();
-        // Hash the session ID before setting it in the cookie
-        $hashedSessionID = hash('sha256', $sessionid);
+$randomID = bin2hex(openssl_random_pseudo_bytes(32));
+// Hash the session ID before setting it in the cookie
+$hashedSessionID = hash('sha256', $randomID);
         // Set session cookie with secure and HTTP only flags
         $cookieParams = session_get_cookie_params();
         setcookie("flowershop_session", $hashedSessionID, time() + 604800, $cookieParams['path'], $cookieParams['domain'], true, true);
 
         $result = db_query("INSERT INTO sessions VALUES ('$hashedSessionID', $userid)");
-
-        // Redirect to userdetails page
-    header("Location: " . $GLOBALS["siteroot"] . "userdetails.php?id=$userid");
-    exit;
-} else {
-
-    echo "Error: Failed to insert session data into the database.";
-}
-
-
-
-session_start();
+        session_start();
 
 // Check if CSRF token exists and is not expired
 if (!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token_expiry'] < time()) {
@@ -169,6 +157,17 @@ if (!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token_expiry'] < time()) 
 }
 
 $csrfToken = $_SESSION['csrf_token'];
+
+        // Redirect to userdetails page
+    header("Location: " . $GLOBALS["siteroot"] . "userdetails.php");
+    exit;
+} else {
+
+    echo "Error: Failed to insert session data into the database.";
+}
+
+
+
 
 
 

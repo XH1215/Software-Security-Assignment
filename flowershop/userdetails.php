@@ -42,9 +42,13 @@ if (!open_db()){
 	die;
 }
 session_start();    
-$result=db_query("select * from users where uid=".$_GET["id"]);
+$sessionId = $_COOKIE["flowershop_session"];
+$idIs = db_query("SELECT userid FROM sessions WHERE uid = '$sessionId'");
+$row1 = fetch_row($idIs);
+$userIdinSession = $row1["userid"];
+$result=db_query("select * from users where uid='$userIdinSession'");
 $row=fetch_row($result);
-$csrfToken = $_COOKIE['PHPSESSID'];
+$csrfToken = $_SESSION['csrf_token'];
 while($row){
 	echo "<p class=\"content\">Here are your user details.\n";
 	echo "<br><br>\n";

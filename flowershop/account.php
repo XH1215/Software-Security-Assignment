@@ -49,6 +49,7 @@ if (isset( $_COOKIE["flowershop_session"])) {
 		echo "<p class=\"content\">Invalid or timed-out session, please login<br><br>\n";
 ?>
 
+
 <table>
 <form action="login.php" method="post">
 <tr><td><img src="images/px.gif" width=20"></td><td><div class="content">Login</div></td><td><input name="login"></td></tr>
@@ -59,18 +60,23 @@ if (isset( $_COOKIE["flowershop_session"])) {
 <?php
 	}
 	else{
+
 session_start();
 if (!isset($_SESSION['csrf_token'])) {
 $_SESSION['csrf_token'] = bin2hex(openssl_random_pseudo_bytes(32));
 }
 $csrfToken = $_SESSION['csrf_token'];
+
+
 		$row=fetch_row($result);    
 		$userid=$row["userid"];
+
+
 		// redirect to account page
-		header("Location: ".$GLOBALS["siteroot"]."userdetails.php?id=$userid");
+		header("Location: ".$GLOBALS["siteroot"]."userdetails.php");
 		exit();
 	}
-}
+}   
 else{
 	//get the user to login
 ?>
