@@ -185,6 +185,7 @@ $csrfToken = $_SESSION['csrf_token'];
 
 
 header("Location: " . $GLOBALS["siteroot"] . "userdetails.php?id=$userid");
+
 exit();
 
 

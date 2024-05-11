@@ -20,10 +20,22 @@ if ($_FILES['picfile'] == "none"){
 	exit;
 }
 
-if ($_FILES['picfile']['type'] != "image/gif"){
-		echo "<p>Picture file must be a gif document";
-		exit;
+// Check if the uploaded file has a ".gif" extension
+$allowedExtensions = array("gif");
+$uploadFileExtension = strtolower(pathinfo($_FILES['picfile']['name'], PATHINFO_EXTENSION));
+if (!in_array($uploadFileExtension, $allowedExtensions)) {
+    echo "<p>Picture file must have a .gif extension.</p>\n";
+    exit;
 }
+
+$gifFileSignature = "\x47\x49\x46\x38\x37\x61"; // GIF87a file signature
+$gifFileSignature2 = "\x47\x49\x46\x38\x39\x61"; // GIF89a file signature
+$fileSignature = file_get_contents($_FILES['picfile']['tmp_name'], false, null, 0, 6); // Read the first 6 bytes
+if ($fileSignature !== $gifFileSignature && $fileSignature !== $gifFileSignature2) {
+    echo "<p>Uploaded file is not a valid GIF image.</p>\n";
+    exit;
+}
+
 
 $result = db_query("insert into flowers values(NULL,'".$_POST['flowername']."', '".$_POST["description"]."',".$_POST['price'].")");
 if (!$result){
@@ -57,6 +69,7 @@ header('X-Frame-Options: DENY');
 $lastid = get_last_id();
 
 // create upload directory for this flower 
+$GLOBALS["uploaddir"]="C:/xampp/htdocs/flowershop/uploads";
 $newdir = $GLOBALS["uploaddir"]."/flowers/".$lastid;
 echo "<p>-- attempting to create $newdir";
 if (!mkdir($newdir,0777)){
