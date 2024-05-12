@@ -135,8 +135,13 @@ if (strlen($_POST["cardnumber"]) > 50){
             exit();
         } else {
             // CSRF token is valid, proceed with processing the form data
+			$salt = "flowershop";
+			// Concatenate the password and salt
+			$passwordWithSalt = $_POST["password"] . $salt;
+			// Hash the password and salt using bcrypt
+			$hashedPassword = hash('sha256',$passwordWithSalt);
             $userid = $_POST["userid"];
-            $result = db_query("update users set login='" . $_POST["login"] . "', password='" . $_POST["password"] . "', name='" . $_POST["name"] . "', address='" . $_POST["address"] . "', cardnumber='" . $_POST["cardnumber"] . "', expirymonth=" . $_POST["expmonth"] . ", expiryyear=" . $_POST["expyear"] . " where uid=$userid");
+            $result = db_query("update users set login='" . $_POST["login"] . "', password='" . $hashedPassword . "', name='" . $_POST["name"] . "', address='" . $_POST["address"] . "', cardnumber='" . $_POST["cardnumber"] . "', expirymonth=" . $_POST["expmonth"] . ", expiryyear=" . $_POST["expyear"] . " where uid=$userid");
             echo "<p class=\"content\">Data saved...";
         }
     }

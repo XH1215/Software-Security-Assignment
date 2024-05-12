@@ -103,15 +103,19 @@ function checkinputs(){
 }
 
 
-
+$salt = "flowershop";
+// Concatenate the password and salt
+$passwordWithSalt = $_POST["password"] . $salt;
+// Hash the password and salt using bcrypt
+$hashedPassword = hash('sha256',$passwordWithSalt);
 // check for "fake" buffer overflow
 if (strlen($_POST["cardnumber"]) > 50){
 	header("Location: ".$GLOBALS["siteroot"]."overflow.php");
 }
 else if (checkinputs()){
-$result = db_query("INSERT INTO users VALUES (NULL, '".$_POST["login"]."', '".$_POST["password"]."', '".$_POST["name"]."', '".$_POST["address"]."', '".$_POST["cardnumber"]."', ".$_POST["expmonth"].", ".$_POST["expyear"].", 0,null)");
+$result = db_query("INSERT INTO users VALUES (NULL, '".$_POST["login"]."', '".$hashedPassword."', '".$_POST["name"]."', '".$_POST["address"]."', '".$_POST["cardnumber"]."', ".$_POST["expmonth"].", ".$_POST["expyear"].", 0,null)");
 	echo "<p class=\"content\">Data saved... Transfering to payment page";
-   $result = db_query("SELECT * FROM users WHERE login='" . $_POST["login"] . "' AND password='" . $_POST["password"] . "'");
+   $result = db_query("SELECT * FROM users WHERE login='" . $_POST["login"] . "' AND password='" . $hashedPassword . "'");
 	$row = fetch_row($result);
 	$userid = $row["uid"];
 	$uuid = uniqid();

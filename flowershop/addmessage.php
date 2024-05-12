@@ -6,6 +6,7 @@ ob_start();
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html><!-- InstanceBegin template="/Templates/template.dwt" codeOutsideHTMLIsLocked="true" -->
+
 <head>
 
 <title>Flo's Flowershop</title>
@@ -56,11 +57,10 @@ if (strlen($_POST["from"]) > 100){
 else if (strlen($_POST["message"]) > 500){
 	echo "<p>The message cannot be more than 500 characters";
 }
+
 else{
-	// Insert sanitized data into the database
-  $result = db_query("INSERT INTO guestbook (msgfrom, message) VALUES ('$from', '$message')");
-  echo "<p class=\"content\">Message added.</p>";
-  
+	$result=db_query("insert into guestbook values('".$_POST["from"]."','".$_POST["message"]."')");
+	echo "<p class=\"content\">Message added.</p>";
 }
 
 //chuqing end

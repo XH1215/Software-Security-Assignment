@@ -36,7 +36,7 @@ date_default_timezone_set('Asia/Kuala_Lumpur');
                     <td width="15" height="410"><img src="images/spacer.gif" width="1" height="1"></td>
                     <td width="752" align="left" valign="top">
                         <!-- InstanceBeginEditable name="Content" -->
-
+                  
                         <?php
                         require "flowershop.conf";
                         require "db_func.php";
@@ -46,8 +46,6 @@ date_default_timezone_set('Asia/Kuala_Lumpur');
                         }
 
                         $loginName = stripslashes($_POST["login"]);
-                        $loginPass = stripslashes($_POST["password"]);
-
                         // Check if the account is locked
                         $result = db_query("SELECT login_attempts, lock_time FROM users WHERE login='" . $loginName . "'");
                         $row = fetch_row($result);
@@ -76,6 +74,8 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
     // If lock time has expired, reset login attempts and lock time
     db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$loginName'");
 }
+    $salt="flowershop";
+    $passwordWithSalt = $_POST["password"]. $salt;
 
     //chuqing start
     $login = isset($_POST['login']) ? $_POST['login'] : '';
@@ -92,13 +92,15 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
     //chuqing end
 
    // Check login credentials
-   $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+   $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $hashedPassword. "'");
+
  
 
 
  if (num_rows($result) == 0) {
     // Invalid login, increment login attempts count
     $result = mysql_query("SELECT login_attempts FROM users WHERE login='" . $loginName . "'");
+    
     $row = fetch_row($result);
     $loginAttempts = $row["login_attempts"] + 1;
 
@@ -112,8 +114,9 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
         echo "<p class=\"content\">Account has been locked. Please try again in 5 minutes.\n";
         exit;
     } else {
-        $result = mysql_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
+        $result = mysql_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $hashedPassword . "'");
         if (mysql_num_rows($result) == 0) {
+
     // No matching login name found
     // Redirect to the login page with an error message
     header("Location: ".$GLOBALS["siteroot"]."account.php");

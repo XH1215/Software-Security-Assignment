@@ -34,6 +34,7 @@ if (!$result){
 $lastid = get_last_id();
 
 // create upload directory for this flower 
+$GLOBALS["uploaddir"]="C:/xampp/htdocs/flowershop/uploads";
 $newdir = $GLOBALS["uploaddir"]."/arrangements/".$lastid;
 echo "<p>-- attempting to create $newdir";
 if (!mkdir($newdir,0777)){

@@ -33,6 +33,7 @@ ob_start();
           <td width="15" height="410"><img src="images/spacer.gif" width="1" height="1"></td>
           <td width="752" align="left" valign="top">
 		    <!-- InstanceBeginEditable name="Content" -->
+      
 <?php
 require "flowershop.conf";
 require "db_func.php";
@@ -52,6 +53,7 @@ if (!isset( $_COOKIE["flowershop_cart"] )) {
 
 	// setup cookie
 	setcookie("flowershop_cart", "$cartid");
+ 
 }
 else{
 	// get old cart value

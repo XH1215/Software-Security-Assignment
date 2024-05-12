@@ -7,5 +7,3 @@ RewriteCond %{REQUEST_URI} ^/flowershop/sql/ [NC]
 # If the request is for the sql folder, deny access
 RewriteRule .* - [F]
 
-
-

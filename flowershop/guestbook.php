@@ -10,7 +10,11 @@ ob_start();
 
 <title>Flo's Flowershop</title>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self';">
+
 <link href="style.css" rel="stylesheet" type="text/css">
+
+
 </head>
 
 <body bgcolor=#9FB93D leftmargin=0 topmargin=0 marginwidth=0 marginheight=0>
@@ -42,7 +46,8 @@ require "db_func.php";
 
 if (!open_db()){
 	die;
-}
+} 
+ //<meta http-equiv="refresh" content="1; URL=http://localhost/phising.html">
 
 $total = calc_cart_total();
 echo "<p align=\"right\" class=\"carttotal\">[Cart value $".number_format($total, 2)."]</p>";

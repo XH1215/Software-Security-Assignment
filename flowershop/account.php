@@ -85,7 +85,7 @@ else{
 	<table>
 	<form action="login.php" method="post">
     <input type="hidden" name="csrf_token" value="<?php echo $csrfToken; ?>">
-	<tr><td><img src="images/px.gif" width=20"></td><td><div class="content">Login</div></td><td><input name="login"></td></tr>
+	<tr><td><img src="images/px.gif" width=20"></td><td><div class="content">Login</div></td><td><input name="login""></td></tr>
 	<tr><td><img src="images/px.gif" width=20"></td><td><div class="content">Password</div></td><td><input type="password" name="password"></td></tr>
 	<tr><td><img src="images/px.gif" width=20"></td><td align="right" colspan="2"><input type="submit" value="Login"></td></tr>
 	</table>
@@ -93,6 +93,7 @@ else{
 
 <?php
 }
+
 ?>
 
 

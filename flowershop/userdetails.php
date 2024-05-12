@@ -57,6 +57,8 @@ while($row){
     echo "<input type=\"hidden\" name=\"csrf_token\" value=\"" . $csrfToken . "\">\n";
 
 
+  
+
 ?>
 	<table>
               <tr>
