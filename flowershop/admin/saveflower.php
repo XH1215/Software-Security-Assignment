@@ -69,8 +69,8 @@ header('X-Frame-Options: DENY');
 $lastid = get_last_id();
 
 // create upload directory for this flower 
-$GLOBALS["uploaddir"]="C:/xampp/htdocs/flowershop/uploads";
-$newdir = $GLOBALS["uploaddir"]."/flowers/".$lastid;
+$newdir = "D:/xampp/htdocs/flowershop/uploads/flowers/" . $lastid;
+
 echo "<p>-- attempting to create $newdir";
 if (!mkdir($newdir,0777)){
 	echo "<p>Could not create upload directory.\n";

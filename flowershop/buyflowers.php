@@ -63,7 +63,7 @@ else{
 
 	// add flowers to cart
 	$result=db_query("select * from flowers");
-	$row = fetch_row($result);\
+	$row = fetch_row($result);
 
 
 	//chuqing start
