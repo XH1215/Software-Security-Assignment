@@ -46,11 +46,12 @@ $total = calc_cart_total();
 echo "<p align=\"right\" class=\"carttotal\">[Cart value $".number_format($total, 2)."]</p>";
 echo "<br><br>";
 
+//chuqing start
 $email = $_POST["email"];
 $to = $_POST["to"];
 $from = $_POST["from"];
 $subject = $_POST["subject"];
-$message = $_POST["message"];
+$message = isset($_POST["message"]) ? htmlspecialchars($_POST["message"], ENT_HTML401, 'UTF-8') : '';
 // first check that the calling page is "tellfriend.php" -- don't want an open mail relay :)
 if (getenv('HTTP_REFERER') != $GLOBALS["siteroot"]."tellfriend.php"){
 	echo "<p class=\"content\">You cannot call this page directly.  ";
@@ -61,28 +62,20 @@ else if (($to=="")||($from=="")||($message=="")){
 }
 else{
 	// format is "fakemail sentfrom sentto subject message"
-	$email = $_POST["email"];
-	$to = $_POST["to"];
-	$from = $_POST["from"];
-	$subject = $_POST["subject"];
-	$message = $_POST["starttxt"].$_POST["message"].$_POST["endtxt"];
-	// $cmd = stripslashes("fakemail/fakemail '$email' '$to' '$subject' '$message\n'");
-	// $cmd = stripslashes("cd fakemail; fakemail '$email' '$to' '$subject' '$message\n'");
-	// $cmd = "cd fakemail; java fakemail '$email' '$to' '$subject' '$message\n'";
-  	// $cmd = "dir";
-	// $cmd = stripslashes("java fakemail $email $to $subject $message");
-     // $cmd = "java HelloWorld";
-     // $cmd = "java fakemail $email $to $subject $message<cr>";
-	// $cmd = "java fakemail email to subject message";
-     // $cmd = "java fakemail $email $to $subject $message";
-     $cmd = stripslashes("java fakemail \"$email\" \"$to\" \"$subject\" \"$message\"");
+	$email = isset($_POST["email"]) ? htmlspecialchars($_POST["email"], ENT_QUOTES, 'UTF-8') : "";
+  $to = isset($_POST["to"]) ? htmlspecialchars($_POST["to"], ENT_QUOTES, 'UTF-8') : "";
+  $from = isset($_POST["from"]) ? htmlspecialchars($_POST["from"], ENT_QUOTES, 'UTF-8') : "";
+  $subject = isset($_POST["subject"]) ? htmlspecialchars($_POST["subject"], ENT_QUOTES, 'UTF-8') : "";
+  $message = isset($_POST["message"]) ? htmlspecialchars($_POST["message"], ENT_QUOTES, 'UTF-8') : '';
+     
+  $cmd = stripslashes("java fakemail \"$email\" \"$to\" \"$subject\" \"$message\"");
 	echo "$cmd<br><br>";
 	echo "<pre>";
 	passthru($cmd);
-     // system($cmd);
-     // exec($cmd);
+
 	echo "</pre>";
 }
+//chuiqng end
 
 
 ?>

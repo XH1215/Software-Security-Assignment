@@ -77,6 +77,20 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
     db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$loginName'");
 }
 
+    //chuqing start
+    $login = isset($_POST['login']) ? $_POST['login'] : '';
+    $password = isset($_POST['password']) ? $_POST['password'] : '';
+    $login = $_POST['login'];
+    $login = stripslashes($login);
+    $login = mysql_real_escape_string($login);
+    $password = $_POST['password'];
+    $password = stripslashes($password);
+    $password = mysql_real_escape_string($password);
+
+    $result=db_query("select * from users where login='".$login."' and password='".$password."'");
+
+    //chuqing end
+
    // Check login credentials
    $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $loginPass . "'");
  
