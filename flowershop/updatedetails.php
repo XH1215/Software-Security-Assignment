@@ -62,10 +62,23 @@ function checkinputs(){
 		$message = $message . "<li>Invalid card type</li>\n";
 		$error = TRUE;
 	}
-	if (strlen($_POST["cardnumber"])!=16){
-		$message = $message . "<li>Invalid card number</li>\n";
-		$error = TRUE;
+
+
+
+	//chuqing start
+	$cardnumber = filter_var($_POST["cardnumber"], FILTER_SANITIZE_STRING);
+	$maxCardNumberLength = 16; // Define the expected maximum length of the card number
+
+	if (strlen($cardnumber) != $maxCardNumberLength){
+		$message=$message. "<li>Invalid card number.</li>\n";
+		$error=TRUE;
 	}
+
+	//chuqing end
+
+
+
+
 	if (($_POST["expmonth"]<1) || ($_POST["expmonth"]>12)){
 		$message = $message . "<li>Invalid expiry month</li>\n";
 		$error = TRUE;

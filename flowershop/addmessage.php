@@ -41,9 +41,14 @@ if (!open_db()){
 	die;
 }
 
+//chuqing start
 $total = calc_cart_total();
 echo "<p align=\"right\" class=\"carttotal\">[Cart value $".number_format($total, 2)."]</p>";
 echo "<br><br>";
+
+// Sanitize and validate input
+$from = isset($_POST["from"]) ? htmlspecialchars($_POST["from"], ENT_QUOTES, 'UTF-8') : "";
+$message = isset($_POST["message"]) ? htmlspecialchars($_POST["message"], ENT_QUOTES, 'UTF-8') : "";
 
 if (strlen($_POST["from"]) > 100){
 	echo "<p>Name cannot be more than 100 characters";
@@ -52,10 +57,13 @@ else if (strlen($_POST["message"]) > 500){
 	echo "<p>The message cannot be more than 500 characters";
 }
 else{
-	$result=db_query("insert into guestbook values('".$_POST["from"]."','".$_POST["message"]."')");
-	echo "<p class=\"content\">Message added.</p>";
+	// Insert sanitized data into the database
+  $result = db_query("INSERT INTO guestbook (msgfrom, message) VALUES ('$from', '$message')");
+  echo "<p class=\"content\">Message added.</p>";
+  
 }
 
+//chuqing end
 ?>
 
 <p><a href="guestbook.php">Go back</a> to the guestbook

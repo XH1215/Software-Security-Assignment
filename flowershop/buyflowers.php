@@ -63,19 +63,42 @@ else{
 
 	// add flowers to cart
 	$result=db_query("select * from flowers");
-	$row = fetch_row($result);
-	// see if each flower is checked
-	while ($row){
-		$id = $row["uid"];
-		if ($_POST[$id] == "on"){
-			$insert=db_query("insert into flowercart values ($cartid, $id)");
-		}
-		$row=fetch_row($result);
-	}
+	$row = fetch_row($result);\
 
-	// finally, update the quantity
-	$qty=$_POST["quantity"];
-	$update=db_query("update cart set flowerquantity=$qty where uid=$cartid");
+
+	//chuqing start
+  // Quantity parameter passed through POST request
+
+  if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate quantity parameter
+    $quantity = isset($_POST["quantity"]) ? intval($_POST["quantity"]) : 0; // Convert to integer
+    if ($quantity <= 0) {
+      ?>
+      <h1>Error</h1>
+      <p>Quantity cannot be negative</p>
+      <?php
+      exit();
+  } elseif ($quantity > 99) {
+    ?>
+    <h1>Error</h1>
+    <p>Quantity cannot be exceed 99</p>
+    <?php
+      exit();
+  }
+}
+
+// See if each flower is checked
+while ($row) {
+  $id = $row["uid"];
+  if (isset($_POST[$id]) && $_POST[$id] == "on") {
+      // Insert into flowercart table
+      $insert = db_query("insert into flowercart values ($cartid, $id)");
+      $update=db_query("update cart set flowerquantity=$quantity where uid=$cartid");
+
+  }
+  $row = fetch_row($result);
+}
+//chuqing end
 
 ?>
 

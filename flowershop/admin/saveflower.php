@@ -31,6 +31,29 @@ if (!$result){
     exit;
 }
 
+
+//chuqing start
+// Validate the description field
+$description = isset($_POST["description"]) ? $_POST["description"] : "";
+// Escape HTML special characters in the description
+$description = htmlspecialchars($description, ENT_QUOTES, 'UTF-8');
+
+// Insert into the database after escaping HTML characters
+$result = db_query("insert into flowers values(NULL,'".$_POST['flowername']."', '".$description."',".$_POST['price'].")");
+if (!$result) {
+    // Handle database insertion failure
+    exit;
+}
+
+// Set X-Frame-Options header to deny framing
+header('X-Frame-Options: DENY');
+//chuqing end
+
+
+
+
+
+
 $lastid = get_last_id();
 
 // create upload directory for this flower 
