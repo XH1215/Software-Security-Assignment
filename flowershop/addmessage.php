@@ -59,8 +59,10 @@ else if (strlen($_POST["message"]) > 500){
 }
 
 else{
-	$result=db_query("insert into guestbook values('".$_POST["from"]."','".$_POST["message"]."')");
-	echo "<p class=\"content\">Message added.</p>";
+	// Insert sanitized data into the database
+  $result = db_query("INSERT INTO guestbook (msgfrom, message) VALUES ('$from', '$message')");
+  echo "<p class=\"content\">Message added.</p>";
+  
 }
 
 //chuqing end
