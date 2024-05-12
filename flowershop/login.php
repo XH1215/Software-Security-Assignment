@@ -75,7 +75,7 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
     db_query("UPDATE users SET login_attempts = 0, lock_time = NULL WHERE login = '$loginName'");
 }
     $salt="flowershop";
-    $passwordWithSalt = $_POST["password"]. $salt;
+   
 
     //chuqing start
     $login = isset($_POST['login']) ? $_POST['login'] : '';
@@ -86,19 +86,16 @@ if($loginAttempts >= 5 && $lockTime > $fiveMinutesAgo) {
     $password = $_POST['password'];
     $password = stripslashes($password);
     $password = mysql_real_escape_string($password);
+    $passwordWithSalt = $password. $salt;
+    $hashedPassword = hash('sha256',$passwordWithSalt);
 
-    $result=db_query("select * from users where login='".$login."' and password='".$password."'");
+    $result=db_query("select * from users where login='".$login."' and password='".$hashedPassword."'");
 
     //chuqing end
 
-   // Check login credentials
-   $result = db_query("SELECT * FROM users WHERE login='" . $loginName . "' AND password='" . $hashedPassword. "'");
-
- 
-
-
  if (num_rows($result) == 0) {
     // Invalid login, increment login attempts count
+    echo "invalid";
     $result = mysql_query("SELECT login_attempts FROM users WHERE login='" . $loginName . "'");
     
     $row = fetch_row($result);

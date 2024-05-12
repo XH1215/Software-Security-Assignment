@@ -48,8 +48,9 @@ echo "<p align=\"right\" class=\"carttotal\">[Cart value $".number_format($total
 echo "<br><br>";
 
 // Sanitize and validate input
-$from = isset($_POST["from"]) ? htmlspecialchars($_POST["from"], ENT_QUOTES, 'UTF-8') : "";
-$message = isset($_POST["message"]) ? htmlspecialchars($_POST["message"], ENT_QUOTES, 'UTF-8') : "";
+$from = isset($_POST["from"]) ? strip_tags(htmlspecialchars($_POST["from"], ENT_QUOTES, 'UTF-8')) : "";
+$message = isset($_POST["message"]) ? strip_tags(htmlspecialchars($_POST["message"], ENT_QUOTES, 'UTF-8')) : "";
+
 
 if (strlen($_POST["from"]) > 100){
 	echo "<p>Name cannot be more than 100 characters";
