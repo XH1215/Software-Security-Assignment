@@ -46,6 +46,17 @@ $sessionId = $_COOKIE["flowershop_session"];
 $idIs = db_query("SELECT userid FROM sessions WHERE uid = '$sessionId'");
 $row1 = fetch_row($idIs);
 $userIdinSession = $row1["userid"];
+
+// Check if the logout button is clicked
+if (isset($_POST['logout'])) {
+    // Unset the session cookie
+    setcookie("flowershop_session", "", time() - 3600);
+    // Redirect to the login page
+    header("Location: account.php");
+    exit();
+}
+
+
 $result=db_query("select * from users where uid='$userIdinSession'");
 $row=fetch_row($result);
 $csrfToken = $_SESSION['csrf_token'];
@@ -143,6 +154,11 @@ while($row){
             </table>
             </form>
             <br><br>
+            <form action="userdetails.php" method="post">
+    <input type="submit" name="logout" value="Logout">
+</form>
+
+
 <?php
 
 	$row=fetch_row($result);
